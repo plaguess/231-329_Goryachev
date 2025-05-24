@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    container_name: cars_db_container
+    restart: always
+    environment:
+      POSTGRES_DB: cars_database
+      POSTGRES_USER: cars_user
+      POSTGRES_PASSWORD: cars_password123
+    ports:
+      - "5433:5432"
+    volumes:
+      - cars_data:/var/lib/postgresql/data
+
+volumes:
+  cars_data: 
