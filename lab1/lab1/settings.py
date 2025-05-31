@@ -135,3 +135,15 @@ CORS_ALLOW_ALL_ORIGINS = True
 DJANGO_SUPERUSER_USERNAME = 'admin'
 DJANGO_SUPERUSER_EMAIL = 'admin@example.com'
 DJANGO_SUPERUSER_PASSWORD = 'admin'
+
+# REST Framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+}

@@ -19,6 +19,8 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from mainapp.views import CarViewSet
+from django.views.decorators.csrf import csrf_exempt
+# from rest_framework.documentation import include_docs_urls  # Закомментировано для устранения ошибки
 
 router = DefaultRouter()
 router.register(r'api/cars', CarViewSet)
@@ -26,4 +28,5 @@ router.register(r'api/cars', CarViewSet)
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', include(router.urls)),
+    # path('docs/', include_docs_urls(title='Cars API Documentation')),  # Закомментировано для устранения ошибки
 ]
