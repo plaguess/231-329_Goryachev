@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database Service
+  postgres:
+    image: postgres:15-alpine
+    container_name: cars_postgres
+    environment:
+      POSTGRES_DB: cars_database
+      POSTGRES_USER: cars_user
+      POSTGRES_PASSWORD: cars_password123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cars_user -d cars_database"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - cars_network
+
+  # Django Backend Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cars_backend
+    environment:
+      POSTGRES_DB: cars_database
+      POSTGRES_USER: cars_user
+      POSTGRES_PASSWORD: cars_password123
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+    volumes:
+      - static_volume:/app/staticfiles
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - cars_network
+
+  # Nginx Reverse Proxy Service
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: cars_nginx
+    volumes:
+      - static_volume:/staticfiles:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - cars_network
+
+# Named Volumes
+volumes:
+  postgres_data:
+    driver: local
+  static_volume:
+    driver: local
+
+# Networks
+networks:
+  cars_network:
+    driver: bridge 
